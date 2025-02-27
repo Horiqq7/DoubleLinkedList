@@ -1,0 +1,51 @@
+	In fisierul functii.h am implementat toate structurile si functiile necesare rezolvarii acestei teme.
+
+	Am definit mai intai structura pentru tren, formata dintr-o lista dublu inlantuita circulara cu santinela. Aceasta are pointeri la campurile mecanic (vagonul pe care se afla mecanicul), si santinela (locomotiva). Apoi pentru vagon am definit o structura, in care se regasesc pointeri la vagonul anterior, precum si cel urmator, si caracterul din vagon.
+
+	Am definit o functie prin care initializez trenul. Mai intai aloc memorie pentru tren, verific daca memoria s-a alocat, apoi aloc memorie pentru sentinela si mecanic. Dupa aceea insciptionez vagonul mecanicului si stabilesc legaturile intre singurul vagon si locomotiva (santinela). La sfarsit returnez trenul.
+
+	Pentru coada am definit o structura formata dintr-o lista dublu inlantuita, cu pointer la primul element, precum si ultimul element din coada. De asemenea, am initializat si un camp pentru dimensiunea cozii. Pentru comenzile din coada am definit o structura, in care se regasesc pointeri la comanda anterioara si urmatoare, si un camp in care se afla sirul de caractere (comanda propriu zisa).
+
+	Am definit functia care adauga comenzi in coada. Mai intai aloc memorie pentru noua comanda, si apoi copiez sirul primit ca parametru in campul command al noii comenzi. Daca nu exista niciun element in coada, atunci comanda nou adaugata va fii singura, si actualizez legaturile. Altfel, comanda adaugata va fii ultima din coada, si actualizez legaturile.
+
+	Pentru functia MOVE_RIGHT, daca ma aflu in ultimul vagon, va trebui sa creez altul, sa actualizez legaturile, sa il inscriptionez, si apoi sa mut mecanicul pe el. Altfel, mut mecanicul pe urmatorul vagon din dreapta.
+
+Pentru MOVE_LEFT, daca mecanicul e in primul vagon al trenului, va trebui sa il mut in ultimul. Altfel, il mut pe vagonul din stanga.
+
+	La functia WRITE, inscriptionez vagonul mecanicului cu caracterul primit ca parametru.
+
+	La functia CLEAR_CELL, am mai multe cazuri. Daca trenul are un singur vagon, il sterg, creez altul nou, il inscriptionez si refac legaturile cu santinela. Daca mecanicul se afla in primul vagon, atunci il sterg, refac legaturile intre santinela si al doilea vagon, care va deveni primul, si voi muta mecanicul in ultimul vagon. Daca mecanicul e in ultimul vagon, atunci il sterg, refac legaturile astfel incat penultimul vagon sa devina ultimul si mut mecanicul in el. In orice alt caz, adica vagonul in care se afla mecanicul e la mijlocul trenului, sterg vagonul, refac legaturile intre vagonul predecesor si succesor, si mut mecanicul in vagonul din stanga (predecesor).
+
+	La CLEAR_ALL, am parcurs trenul de la primul vagon (stergand in acelasi timp vagonul curent), pana cand mai raman cu un singur vagon, adica ultimul. Fac legaturile corespunzatoare astfel incat trenul sa revina la forma lui initiala, si inscriptionez vagonul cu '#'.
+
+	Pentru INSERT_RIGHT, am alocat memorie pentru noul vagon care va urma sa fie adaugat. Daca mecanicul se afla in ultimul vagon, atunci noul vagon inserat va deveni ultimul, il inscriptionez cu caracterul primit ca parametru, refac legaturile cu santinela si mut mecanicul in el. Altfel, il voi insera intre 2 alte vagoane, asa ca trebui sa refac legaturile intre noul vagon si vagoanele intre care este intrdous, mut mecanicul in vagon, si il inscriptionez.
+
+	La INSERT_RIGHT, daca mecanicul e in primul vagon, nu se va putea face inserarea. Altfel, aloc memorie pentru noul vagon, il introduc intre alte 2 vagoane si refac legaturile corespunzatoare, mut mecanicul in el si inscriptionez caracterul.
+
+	Pentru functia SEARCH, voi avea nevoie de un vagon curent, care la inceput este vagonul mecanicului, si cu ajutorul caruia voi parcurge in ordine fiecare vagon din tren. De asemenea, am nevoie si de un vagon temporar, care ma ajuta sa caut sirul cautat, incepand de la vagonul curent. Am nevoie si de un contor (gasit), care se va schimba atunci cand gasesc sirul, precum si de o copie a sirului cautat.
+	Pentru prima parcurgere a sirului, am nevoie si de o variabila (trecut), care se va schimba atunci cand am trecut de santinela.
+	Cat timp exista caractere in sirul cautat, caracterul din sir este acelasi cu cel din vagonul temporar si una din urmatoarele conditii este indeplinita ( ori nu am trecut de sentinela, ori curent nu este in vagonul mecanicului), parcurg trenul vagon cu vagon si sirul caracter cu caracter. Am nevoie de conditia aceasta: (temporar != tren->mecanic || trecut != 1) deoarece cautarea incepe de la temporar = tren->mecanic, iar eu trebuie sa parcurg fiecare vagon al trenului. Daca conditia aceasta nu ar fi existat, nu as fi putut face prima parcurgere a trenului, incepand de la vagonul mecanicului. Daca nu mai exista caractere in sir, inseamna ca acesta a fost gasit, si schimb gasit in 1.
+	Daca dupa prima parcurgere nu a fost gasit sirul, atunci incerc sa il gasesc prin celelalte parcurgeri. Vagonul curent trece la urmatorul din dreapta, si atat timp cat nu sunt in vagonul mecanicului, aplic acelasi rationament, parcurgand trenul vagon cu vagon cu ajutorul lui temporar, si sirul caracter cu caracter, insa acum fara conditia (trecut != 1), deoarece cautarea nu mai incepe din vagonul mecanicului. Daca il gasesc, schimb gasit in 1.
+	Daca dupa toate aceste parcurgeri nu gasesc sirul cautat in tren, inseamna ca acesta nu exista, si afisez un mesaj de eroare.
+	
+	La SEARCH_LEFT, am plecat de la un vagon curent care la inceput e tren->mecanic, si aplic acelasi rationament ca la SEARCH, parcurgand vagoanele de la dreapta la stanga, doar ca acum ma opresc cand intalnesc sentinela.
+	
+	La SEARCH_RIGHT procedez la fel ca la SEARCH_LEFT, doar ca pacurg vagoanele de la stanga la dreapta, pana ajung la sentinela.
+	
+	La SHOW_CURRENT afisez caracterul din vagonul mecanicului.
+	
+	Pentru SHOW, pornesc cu vagonul curent de la primul vagon si afisez caracterele. Daca curent e vagonul mecanicului, atunci afisez caracterul intre | |.
+	
+	La functia SWITCH, verific la inceput daca coada e goala sau are un element. In caz afirmativ, nu am de ce sa aplic functia, deoarece nu va schimba coada cu nimic. Altfel, pornesc de la primul element din coada (curent), parcurg lista pana cand nu mai am elemente in coada, si schimb legaturile astfel incat urmatorul element dupa curent sa devina cel de dinaintea celui curent. La final, trebuie sa schimb intre ele capetele cozii.
+	
+	La functia EXECUTE, daca nu am comenzi in coada inseamna ca nu am ce executa. Altfel, initializez comanda comanda cu prima comanda din coada. Apoi verific care comanda este. Daca este o comanda urmata de un caracter / sir de caractere, atunci salvez sirul de caractere si apelez functia respectiva cu sirul in antet. Dupa aceea, trebuie sa elimin comanda din coada si sa refac legaturile corespunzatoare, apoi sa modific sizeul.
+	
+	In functia elibereaza_coada, parcurg coada de la inceput pana la final si eliberez memoria pentru fiecare comanda din coada care mai exista, apoi eliberez memorie pentru coada.
+	
+	In functia elibereaza_tren, parcurg trenul de la locomotiva pana la ultimul vagon si eliberez memoria alocata pentru fiecare vagon, apoi eliberez memoria pentru santinela si la final, pentru tren.
+	
+	In fisierul main.c, am nevoie de numarul de comenzi, si comanda pe care o voi prelucra. Citesc fiecare linie din fisier, iar daca comanda introdusa are un sir de caractere care trebuie prelucrat, il voi citi si voi forma un string care sa contina numele comenzii si sirul care trebuie prelucrat, apoi adaug comanda in coada. Daca este o comanda care nu trebuie adaugata in coada, o execut pe loc. La final eliberez memoria din coada si din tren.
+	
+
+
+
